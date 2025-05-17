@@ -1,0 +1,86 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+    
+  }
+  
+  .container {
+    height: 100vh;
+    width: 100%;
+  }
+  
+  .sidebar {
+    background-color: #0c0c0c;
+    color: #fff;
+    padding: 40px 20px;
+    width: 300px;
+    height: 100vh;
+    float: left;
+  }
+  
+  .logo {
+    width: 200px;
+    margin-bottom: 40px;
+    
+  }
+  
+  .sidebar nav ul {
+    list-style: none;
+  }
+  
+  .sidebar nav ul li {
+    margin: 20px 0;
+  }
+  
+  .sidebar nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+  }
+  .sidebar a:hover{
+    color: rgb(177, 83, 20);
+  }
+  address{
+    margin-top: 50px;
+  }
+  address a{
+    text-decoration: none;
+    color: rgb(47, 146, 233);
+  }
+ 
+  .main {
+    position: relative;
+    margin-left: 300px;
+    background: url("Images/body2.png") no-repeat center center/cover;
+    height: 100vh;
+   
+  }
+  
+  .overlay {
+    background-color: rgba(75, 75, 75, 0.288);
+    color: rgb(255, 255, 255);
+    padding: 80px;
+    height: 100%;
+     margin-left: 30%;
+  }
+  
+  .overlay h1 {
+    font-size: 40px;
+    margin-bottom: 50px;
+  }
+  
+  .overlay p {
+    font-size: 18px;
+    margin-bottom: 40px;
+  }
+  
+  .hours {
+    font-size: 16px;
+  }
+  
