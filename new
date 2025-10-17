@@ -1,0 +1,422 @@
+
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+void main() => runApp(CoolToDoApp());
+
+class CoolToDoApp extends StatefulWidget {
+  @override
+  _CoolToDoAppState createState() => _CoolToDoAppState();
+}
+
+class _CoolToDoAppState extends State<CoolToDoApp> {
+  bool isDarkMode = false;
+
+  void toggleTheme(bool value) {
+    setState(() {
+      isDarkMode = value;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Cool To-Do',
+      theme: ThemeData(
+        fontFamily: 'Inter',
+        brightness: Brightness.light,
+        primaryColor: Colors.blue,
+        scaffoldBackgroundColor: Colors.white,
+        textTheme: TextTheme(
+          bodyLarge: TextStyle(color: Colors.black87),
+        ),
+      ),
+      darkTheme: ThemeData(
+        fontFamily: 'Inter',
+        brightness: Brightness.dark,
+        primaryColor: Colors.blueGrey,
+        scaffoldBackgroundColor: Colors.black,
+        textTheme: TextTheme(
+          bodyLarge: TextStyle(color: Colors.white),
+        ),
+      ),
+      themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+      home: TaskHomePage(toggleTheme: toggleTheme, isDarkMode: isDarkMode),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class Task {
+  String title;
+  String category;
+  String type;
+  String priority;
+  DateTime created;
+  DateTime? dueDate;
+  bool isDone;
+
+  Task({
+    required this.title,
+    required this.category,
+    required this.type,
+    required this.priority,
+    this.dueDate,
+    this.isDone = false,
+  }) : created = DateTime.now();
+}
+
+class TaskHomePage extends StatefulWidget {
+  final Function(bool) toggleTheme;
+  final bool isDarkMode;
+
+  TaskHomePage({required this.toggleTheme, required this.isDarkMode});
+
+  @override
+  _TaskHomePageState createState() => _TaskHomePageState();
+}
+
+class _TaskHomePageState extends State<TaskHomePage> {
+  List<Task> tasks = [];
+  List<Task> allTasks = [];
+  final categories = ['Work', 'Personal', 'Shopping'];
+  final types = ['Personal', 'Business', 'General'];
+  final priorities = ['High', 'Medium', 'Low'];
+  String searchQuery = '';
+  String sortMethod = 'None';
+
+  void _addTaskDialog({Task? existingTask, int? index}) {
+    String title = existingTask?.title ?? '';
+    String selectedCategory = existingTask?.category ?? categories[0];
+    String selectedType = existingTask?.type ?? types[0];
+    String selectedPriority = existingTask?.priority ?? priorities[0];
+    DateTime? selectedDueDate = existingTask?.dueDate;
+
+    final titleController = TextEditingController(text: title);
+
+Bini Gp, [6/7/2025 10:25 AM]
+showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              title: Text(existingTask == null ? "Add New Task" : "Edit Task"),
+              content: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    TextField(
+                      decoration: InputDecoration(labelText: 'Title'),
+                      controller: titleController,
+                      onChanged: (value) => title = value,
+                    ),
+                    DropdownButtonFormField(
+                      value: selectedCategory,
+                      items: categories
+                          .map((c) => DropdownMenuItem(
+                                value: c,
+                                child: Text(c),
+                              ))
+                          .toList(),
+                      onChanged: (value) => setDialogState(
+                          () => selectedCategory = value.toString()),
+                      decoration: InputDecoration(labelText: 'Category'),
+                    ),
+                    DropdownButtonFormField(
+                      value: selectedType,
+                      items: types
+                          .map((t) => DropdownMenuItem(
+                                value: t,
+                                child: Text(t),
+                              ))
+                          .toList(),
+                      onChanged: (value) =>
+                          setDialogState(() => selectedType = value.toString()),
+                      decoration: InputDecoration(labelText: 'Type'),
+                    ),
+                    DropdownButtonFormField(
+                      value: selectedPriority,
+                      items: priorities
+                          .map((p) => DropdownMenuItem(
+                                value: p,
+                                child: Text(p),
+                              ))
+                          .toList(),
+                      onChanged: (value) => setDialogState(
+                          () => selectedPriority = value.toString()),
+                      decoration: InputDecoration(labelText: 'Priority'),
+                    ),
+                    SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            selectedDueDate == null
+                                ? 'No Due Date'
+                                : 'Due: ${DateFormat.yMMMd().format(selectedDueDate!)}',
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            final picked = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2020),
+                              lastDate: DateTime(2100),
+                            );
+                            if (picked != null) {
+                              setDialogState(() => selectedDueDate = picked);
+                            }
+                          },
+                          child: Text("Pick Date"),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  child: Text("Cancel"),
+                  onPressed: () => Navigator.pop(context),
+                ),
+                ElevatedButton(
+                  child: Text(existingTask == null ? "Add" : "Save"),
+                  onPressed: () {
+                    if (title.trim().isEmpty) return;
+
+Bini Gp, [6/7/2025 10:25 AM]
+setState(() {
+                      if (existingTask == null) {
+                        Task newTask = Task(
+                          title: title,
+                          category: selectedCategory,
+                          type: selectedType,
+                          priority: selectedPriority,
+                          dueDate: selectedDueDate,
+                        );
+                        tasks.add(newTask);
+                        allTasks.add(newTask);
+                      } else {
+                        tasks[index!] = Task(
+                          title: title,
+                          category: selectedCategory,
+                          type: selectedType,
+                          priority: selectedPriority,
+                          dueDate: selectedDueDate,
+                          isDone: existingTask.isDone,
+                        );
+                        allTasks[allTasks.indexOf(existingTask)] = tasks[index];
+                      }
+                      _sortTasks();
+                    });
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _sortTasks() {
+    setState(() {
+      if (sortMethod == 'Priority') {
+        tasks.sort((a, b) => priorities
+            .indexOf(a.priority)
+            .compareTo(priorities.indexOf(b.priority)));
+      } else if (sortMethod == 'Date') {
+        tasks.sort((a, b) => a.created.compareTo(b.created));
+      }
+    });
+  }
+
+  Widget _priorityDot(String priority) {
+    Color color;
+    switch (priority) {
+      case 'High':
+        color = Colors.red;
+        break;
+      case 'Medium':
+        color = Colors.amber;
+        break;
+      case 'Low':
+        color = Colors.green;
+        break;
+      default:
+        color = Colors.grey;
+    }
+    return Container(
+      width: 10,
+      height: 10,
+      margin: EdgeInsets.only(right: 8),
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+      ),
+    );
+  }
+
+  Widget _buildTaskCard(Task task) {
+    int index = tasks.indexOf(task);
+    return AnimatedOpacity(
+      opacity: 1.0,
+      duration: Duration(milliseconds: 200),
+      child: Card(
+        margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        elevation: 3,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        child: ListTile(
+          leading: _priorityDot(task.priority),
+          title: Text(
+            task.title,
+            style: task.isDone
+                ? TextStyle(
+                    decoration: TextDecoration.lineThrough, color: Colors.grey)
+                : null,
+          ),
+          subtitle: Text(
+              "${task.category} | ${task.type} | Priority: ${task.priority}" +
+                  (task.dueDate != null
+                      ? "\nDue: ${DateFormat.yMMMd().format(task.dueDate!)}"
+                      : "")),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              IconButton(
+                icon: Icon(Icons.edit),
+                onPressed: () =>
+                    _addTaskDialog(existingTask: task, index: index),
+              ),
+              IconButton(
+                icon: Icon(Icons.delete),
+                onPressed: () => setState(() {
+                  allTasks.remove(task);
+                  tasks.removeAt(index);
+                }),
+              ),
+              Checkbox(
+                value: task.isDone,
+                onChanged: (value) =>
+                    setState(() => task.isDone = value ?? false),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _searchTasks(String query) {
+    setState(() {
+      searchQuery = query;
+      tasks = allTasks
+          .where(
+              (task) => task.title.toLowerCase().contains(query.toLowerCase()))
+          .toList();
+      _sortTasks();
+    });
+  }
+
+Bini Gp, [6/7/2025 10:25 AM]
+void _filterByCategory(String category) {
+    setState(() {
+      tasks = allTasks.where((task) => task.category == category).toList();
+      _sortTasks();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Cool To-Do List"),
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
+        actions: [
+          DropdownButton<String>(
+            value: sortMethod == 'None' ? 'Sort' : sortMethod,
+            underline: SizedBox(),
+            icon: Icon(Icons.sort, color: Colors.white),
+            dropdownColor: Theme.of(context).primaryColor,
+            items: ['Sort', 'Priority', 'Date']
+                .map((m) => DropdownMenuItem<String>(value: m, child: Text(m)))
+                .toList(),
+            onChanged: (value) {
+              setState(() {
+                sortMethod = value == 'Sort' ? 'None' : value!;
+                _sortTasks();
+              });
+            },
+          ),
+        ],
+      ),
+      drawer: Drawer(
+        child: Column(
+          children: [
+            SizedBox(height: 40),
+            Expanded(
+              child: ListView(
+                children: [
+                  ListTile(
+                      leading: Icon(Icons.home),
+                      title: Text("Home "),
+                      onTap: () {
+                        setState(() {
+                          tasks = List.from(allTasks);
+                          _sortTasks();
+                        });
+                        Navigator.pop(context);
+                      }),
+                  ListTile(
+                    leading: Icon(Icons.help),
+                    title: Text("Help"),
+                    subtitle:
+                        Text("📞 +251900182316\n📧 banabinaruo9@gmail.com"),
+                  ),
+                  Divider(),
+                  ListTile(title: Text("Categories")),
+                  ...categories
+                      .map((cat) => ListTile(
+                            leading: Icon(Icons.folder),
+                            title: Text(cat),
+                            onTap: () {
+                              Navigator.pop(context);
+                              _filterByCategory(cat);
+                            },
+                          ))
+                      .toList(),
+                ],
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.dark_mode),
+              title: Text("Dark Mode"),
+              trailing: Switch(
+                value: widget.isDarkMode,
+                onChanged: widget.toggleTheme,
+              ),
+            ),
+          ],
+        ),
+      ),
+      body: tasks.isEmpty
+          ? Center(child: Text("No tasks yet. Tap + to add."))
+          : ListView.builder(
+              itemCount: tasks.length,
+              itemBuilder: (context, index) => _buildTaskCard(tasks[index]),
+            ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _addTaskDialog(),
+        backgroundColor: Colors.blue,
+        child: Icon(Icons.add),
+      ),
+    );
+  }
+}
