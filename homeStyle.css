@@ -83,4 +83,82 @@
   .hours {
     font-size: 16px;
   }
+     
+    /* --- Responsive Styles --- */
   
+    /* Tablets (max-width: 992px) */
+    @media (max-width: 992px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        float: none;
+        padding: 20px;
+      }
+  
+      .main {
+        margin-left: 0;
+        height: auto;
+      }
+  
+      .overlay {
+        padding: 50px;
+        margin-left: 0;
+      }
+  
+      .overlay h1 {
+        font-size: 32px;
+        margin-bottom: 30px;
+      }
+  
+      .overlay p {
+        font-size: 16px;
+        margin-bottom: 20px;
+      }
+  
+      .hours {
+        font-size: 14px;
+      }
+    }
+  
+    /* Mobile Devices (max-width: 600px) */
+    @media (max-width: 600px) {
+      .sidebar {
+        padding: 15px;
+      }
+  
+      .logo {
+        width: 150px;
+        margin-bottom: 20px;
+      }
+  
+      .sidebar nav ul li {
+        margin: 10px 0;
+      }
+  
+      .sidebar nav ul li a {
+        font-size: 16px;
+      }
+  
+      address {
+        margin-top: 30px;
+        font-size: 12px;
+      }
+  
+      .overlay {
+        padding: 20px;
+      }
+  
+      .overlay h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+  
+      .overlay p {
+        font-size: 14px;
+        margin-bottom: 15px;
+      }
+  
+      .hours {
+        font-size: 12px;
+      }
+    }
