@@ -8,7 +8,7 @@
 
 ## About the Project
 
-This website is built as a front-end showcase using HTML, CSS and JavaScript (and optionally a library like React if you decide to incorporate it). It serves as a landing presence for the café, highlighting:
+This website is built as a front-end showcase using HTML, CSS and JavaScript. It serves as a landing presence for the café, highlighting:
 
 - A warm introduction to the café’s atmosphere  
 - A gallery of images  
